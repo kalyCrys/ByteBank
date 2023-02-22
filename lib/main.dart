@@ -44,13 +44,14 @@ class FormularioTransferencia extends StatelessWidget {
         ));
   }
 
-  _criaTransferencia() {
+  void _criaTransferencia(BuildContext context) {
     final int? numeroConta = int.tryParse(_controladorCampoNumeroConta.text);
     final double? valor = double.tryParse(_controladorCampoNumeroValor.text);
 
     if (numeroConta != null && valor != null) {
       final transferenciaCriada = Transferencia(valor, numeroConta);
       debugPrint('$transferenciaCriada');
+      Navigator.pop(context, transferenciaCriada);
     }
   }
 }
@@ -98,10 +99,15 @@ class ListaTransferencia extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context){
-
+          // Future = callback: garante que uma função seja executada somente depois que uma tarefa for concluída
+          final Future future = Navigator.push(context, MaterialPageRoute(builder: (context){
+          return FormularioTransferencia();
             return FormularioTransferencia();
           }));
+          future.then((TransferenciaRecebida){
+            print('Chegou no then do future');
+            print('$transferenciaRecebida');
+          });
         },
         child: Icon(Icons.add),
       ),
